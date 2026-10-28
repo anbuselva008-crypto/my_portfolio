@@ -3,14 +3,24 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
 const button = document.querySelector('.menu-button');
 const nav = document.querySelector('.nav');
+const setMenuOpen = (isOpen) => {
+  nav?.classList.toggle('open', isOpen);
+  button?.setAttribute('aria-expanded', String(isOpen));
+  button?.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+};
+
 button?.addEventListener('click', () => {
-  const isOpen = nav.classList.toggle('open');
-  button.setAttribute('aria-expanded', String(isOpen));
+  setMenuOpen(!nav?.classList.contains('open'));
 });
 nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
-  nav.classList.remove('open');
-  button?.setAttribute('aria-expanded', 'false');
+  setMenuOpen(false);
 }));
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && nav?.classList.contains('open')) {
+    setMenuOpen(false);
+    button?.focus();
+  }
+});
 
 if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const observer = new IntersectionObserver((entries) => {
